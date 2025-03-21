@@ -32,7 +32,7 @@ export class HomeComponent {
     setTimeout(() => {
       this.loading.setIsLoading(true);
       this.productService.getProducts().subscribe((data) => {
-        this.products = data.products;
+        this.products = data;
         this.loading.setIsLoading(false);
       });
     }, environment.pageInitialStartLoadingServiceDelay);
