@@ -11,6 +11,18 @@
   </button>
 </mat-toolbar>
 
+<div class="search-container">
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Buscar producto</mat-label>
+    <input matInput type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
+
+    <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Limpiar" (click)="searchTerm=''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
+
+
 <div class="content">
   <mat-spinner *ngIf="loading" diameter="48"></mat-spinner>
 
@@ -18,8 +30,9 @@
     {{ errorMessage }}
   </div>
 
+  
   <div class="product-grid" *ngIf="!loading && !errorMessage">
-    <mat-card *ngFor="let product of products" class="product-card">
+    <mat-card *ngFor="let product of filteredProducts" class="product-card">
       <mat-card-header>
         <mat-card-title>{{ product.name }}</mat-card-title>
         <mat-card-subtitle>${{ product.price }}</mat-card-subtitle>
