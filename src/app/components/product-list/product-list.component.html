@@ -1,7 +1,30 @@
-<div class="product-container">
-  <div *ngFor="let product of products" class="product-card">
-    <h3>{{ product.title }}</h3>
-    <p>{{ product.description }}</p>
-    <strong>\${{ product.price }}</strong>
+<mat-toolbar color="primary" class="toolbar">
+  <span class="title">Productos disponibles</span>
+  <span class="spacer"></span>
+  <button mat-fab color="accent" aria-label="Agregar producto" (click)="createProduct()">
+    <mat-icon>add</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="content">
+  <mat-spinner *ngIf="loading" diameter="48"></mat-spinner>
+
+  <div *ngIf="!loading && errorMessage" class="error">
+    {{ errorMessage }}
   </div>
+
+  <mat-list *ngIf="!loading && !errorMessage">
+    <mat-list-item *ngFor="let product of products" class="product-item">
+      <div matLine class="product-name">{{ product.name }}</div>
+      <div matLine class="product-price">Precio: ${{ product.price }}</div>
+
+      <button mat-icon-button color="primary" (click)="editProduct(product)" matTooltip="Editar">
+        <mat-icon>edit</mat-icon>
+      </button>
+
+      <button mat-icon-button color="warn" (click)="removeProduct(product)" matTooltip="Eliminar">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-list-item>
+  </mat-list>
 </div>
