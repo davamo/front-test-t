@@ -1,7 +1,12 @@
 <mat-toolbar color="primary" class="toolbar">
   <span class="title">Productos disponibles</span>
   <span class="spacer"></span>
-  <button mat-fab color="accent" aria-label="Agregar producto" (click)="createProduct()">
+  <button
+    mat-fab
+    color="accent"
+    aria-label="Agregar producto"
+    [routerLink]="['/products/add']"
+  >
     <mat-icon>add</mat-icon>
   </button>
 </mat-toolbar>
@@ -13,18 +18,29 @@
     {{ errorMessage }}
   </div>
 
-  <mat-list *ngIf="!loading && !errorMessage">
-    <mat-list-item *ngFor="let product of products" class="product-item">
-      <div matLine class="product-name">{{ product.name }}</div>
-      <div matLine class="product-price">Precio: ${{ product.price }}</div>
-
-      <button mat-icon-button color="primary" (click)="editProduct(product)" matTooltip="Editar">
-        <mat-icon>edit</mat-icon>
-      </button>
-
-      <button mat-icon-button color="warn" (click)="removeProduct(product)" matTooltip="Eliminar">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </mat-list-item>
-  </mat-list>
+  <div class="product-grid" *ngIf="!loading && !errorMessage">
+    <mat-card *ngFor="let product of products" class="product-card">
+      <mat-card-header>
+        <mat-card-title>{{ product.name }}</mat-card-title>
+        <mat-card-subtitle>${{ product.price }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <img
+          *ngIf="product.images"
+          [src]="product.images"
+          (error)="onImageError($event)"
+          alt="{{ product.name }}"
+          class="product-image"
+        />
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-icon-button color="primary" (click)="editProduct(product)" matTooltip="Editar">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="removeProduct(product)" matTooltip="Eliminar">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 </div>

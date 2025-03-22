@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
+
+// Angular Common & Router
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; 
+
+// Angular Material
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
-import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatTooltipModule } from '@angular/material/tooltip';
-
 
 
 @Component({
@@ -18,6 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule, 
     MatCardModule,
     MatButtonModule,
     MatToolbarModule,
@@ -51,7 +55,7 @@ export class ProductListComponent implements OnInit {
 
   createProduct(): void {
     console.log('Crear producto');
-    // Puedes abrir un diálogo, navegar a otro formulario, etc.
+    // Si decides redirigir desde aquí en lugar de routerLink, usa: this.router.navigate(['/products/add']);
   }
 
   onImageError(event: Event): void {
@@ -63,7 +67,7 @@ export class ProductListComponent implements OnInit {
   }
 
   editProduct(product: Product): void {
-    console.log('Editar producto:', product);
+    console.log('Editar producto....:', product);
   }
 
   removeProduct(product: Product): void {
