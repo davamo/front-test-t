@@ -17,6 +17,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-product-list',
@@ -31,9 +32,9 @@ import { MatInputModule } from '@angular/material/input';
     MatIconModule,
     MatListModule,
     MatTooltipModule,
-    MatFormFieldModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    MatSnackBarModule
   ],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
@@ -47,7 +48,8 @@ export class ProductListComponent implements OnInit {
   filteredProducts: Product[] = [];
 
 
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService,
+    private snackBar: MatSnackBar  ) {}
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe({
@@ -91,6 +93,10 @@ export class ProductListComponent implements OnInit {
 
   removeProduct(product: Product): void {
     this.products = this.products.filter(p => p.id !== product.id);
-    console.log('Producto eliminado:', product);
+    this.applyFilter();
+    this.snackBar.open('🗑️ Producto eliminado (simulado)', 'Cerrar', {
+      duration: 3000
+    });
   }
+
 }
