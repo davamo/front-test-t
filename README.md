@@ -1,4 +1,4 @@
-# 🛒 Front-Test-T – Aplicación Angular 18 para Gestión de Productos
+# 💼 Front-Test-T – Aplicación Angular 18 para Gestión de Productos
 
 Este proyecto es una aplicación web desarrollada con Angular 18 y TypeScript, orientada a la gestión de productos. Permite visualizar, agregar, editar y listar productos utilizando componentes reutilizables y Angular Material para una interfaz moderna y accesible.
 
@@ -10,7 +10,7 @@ Este proyecto es una aplicación web desarrollada con Angular 18 y TypeScript, o
 - SCSS
 - RxJS
 - Servicios con HTTPClient
-- Pruebas con Jasmine y Karma
+- Pruebas con Jasmine, Karma y Cypress para E2E
 
 ## 📁 Estructura del Proyecto
 
@@ -19,20 +19,24 @@ src/app/
 ├── components/
 │   ├── add-product/          # Componente para agregar productos
 │   ├── edit-product/         # Componente para editar productos
-│   ├── product-list/         # Lista de productos (con HTML, SCSS y spec.ts)
+│   ├── product-list/         # Lista de productos
 │   ├── product-table/        # Tabla con listado de productos
 │   ├── side-menu/            # Menú lateral de navegación
 │   ├── status/               # Componente de estado
 │   ├── layout/               # Diseño base (layouts compartidos)
-│   └── loading/              # Indicador de carga (spinner)
-├── features/                 # Funcionalidades agrupadas (si aplica)
+│   └── loading/              # Indicador de carga
+├── features/                 # Funcionalidades agrupadas
 ├── models/                   # Interfaces y modelos de datos
 │   └── product.model.ts
-├── pages/                    # Vistas o páginas principales
-├── pipes/                    # Pipes personalizados (si existen)
+├── pages/                    # Vistas principales
+├── pipes/                    # Pipes personalizados
 ├── services/                 # Servicios reutilizables
 │   ├── loading.service.ts
 │   └── product.service.ts
+cypress/e2e/
+├── product-list.cy.ts        # Pruebas E2E para listado de productos
+├── add-product.cy.ts          # Pruebas E2E para agregar productos
+└── edit-product.cy.ts         # Pruebas E2E para editar productos
 ```
 
 ## 🔧 Instalación
@@ -58,13 +62,19 @@ ng serve
 
 Abrir el navegador en http://localhost:4200/
 
-## 🧪 Ejecutar pruebas
+## 🧪 Ejecutar pruebas unitarias
 
 ```bash
 ng test
 ```
 
-Esto ejecuta las pruebas unitarias configuradas en los archivos .spec.ts.
+## 🧱 Ejecutar pruebas E2E con Cypress
+
+```bash
+npm run cypress:open
+# o en modo headless:
+npm run cypress:run
+```
 
 ## 🧱 Build de producción
 
@@ -80,7 +90,7 @@ Los archivos se generarán en la carpeta dist/.
 - 📋 Listado dinámico con tabla y filtrado
 - 🧱 Navegación lateral con Angular Material
 - 🔄 Indicadores de carga reutilizables
-- 🧪 Pruebas unitarias para servicios y componentes
+- 🧪 Pruebas unitarias y pruebas E2E con Cypress
 
 ## 📃 Licencia
 
