@@ -1,27 +1,92 @@
-# FrontTest
+# 🛒 Front-Test-T – Aplicación Angular 18 para Gestión de Productos
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.12.
+Este proyecto es una aplicación web desarrollada con Angular 18 y TypeScript, orientada a la gestión de productos. Permite visualizar, agregar, editar y listar productos utilizando componentes reutilizables y Angular Material para una interfaz moderna y accesible.
 
-## Development server
+## 🚀 Tecnologías utilizadas
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Angular 18
+- TypeScript
+- Angular Material
+- SCSS
+- RxJS
+- Servicios con HTTPClient
+- Pruebas con Jasmine y Karma
 
-## Code scaffolding
+## 📁 Estructura del Proyecto
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```
+src/app/
+├── components/
+│   ├── add-product/          # Componente para agregar productos
+│   ├── edit-product/         # Componente para editar productos
+│   ├── product-list/         # Lista de productos (con HTML, SCSS y spec.ts)
+│   ├── product-table/        # Tabla con listado de productos
+│   ├── side-menu/            # Menú lateral de navegación
+│   ├── status/               # Componente de estado
+│   ├── layout/               # Diseño base (layouts compartidos)
+│   └── loading/              # Indicador de carga (spinner)
+├── features/                 # Funcionalidades agrupadas (si aplica)
+├── models/                   # Interfaces y modelos de datos
+│   └── product.model.ts
+├── pages/                    # Vistas o páginas principales
+├── pipes/                    # Pipes personalizados (si existen)
+├── services/                 # Servicios reutilizables
+│   ├── loading.service.ts
+│   └── product.service.ts
+```
 
-## Build
+## 🔧 Instalación
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+1. Clonar el repositorio
 
-## Running unit tests
+```bash
+git clone https://github.com/usuario/front-test-t.git
+cd front-test-t
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+2. Instalar dependencias
 
-## Running end-to-end tests
+```bash
+npm install
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+3. Ejecutar la aplicación
 
-## Further help
+```bash
+ng serve
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Abrir el navegador en http://localhost:4200/
+
+## 🧪 Ejecutar pruebas
+
+```bash
+ng test
+```
+
+Esto ejecuta las pruebas unitarias configuradas en los archivos .spec.ts.
+
+## 🧱 Build de producción
+
+```bash
+ng build --configuration production
+```
+
+Los archivos se generarán en la carpeta dist/.
+
+## 🧠 Funcionalidades principales
+
+- 📝 Crear y editar productos
+- 📋 Listado dinámico con tabla y filtrado
+- 🧱 Navegación lateral con Angular Material
+- 🔄 Indicadores de carga reutilizables
+- 🧪 Pruebas unitarias para servicios y componentes
+
+## 📃 Licencia
+
+Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+
+## 👨‍💼 Autor
+
+Desarrollado por David Varela M  
+️✉️ Contacto: davamo@davamo.cl
