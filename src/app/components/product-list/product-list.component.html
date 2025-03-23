@@ -15,7 +15,7 @@
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>Buscar producto</mat-label>
     <input matInput type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
-    <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Limpiar" (click)="searchTerm=''">
+    <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Limpiar" (click)="clearSearch()">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
@@ -29,7 +29,7 @@
   </div>
 
   <div class="product-grid" *ngIf="!loading && !errorMessage">
-    <mat-card *ngFor="let product of filteredProducts" class="product-card">
+    <mat-card *ngFor="let product of paginatedProducts" class="product-card">
       <mat-card-header>
         <mat-card-title>{{ product.name }}</mat-card-title>
         <mat-card-subtitle>${{ product.price }}</mat-card-subtitle>
@@ -45,13 +45,13 @@
       </mat-card-content>
       <mat-card-actions align="end">
         <button
-        mat-icon-button
-        color="primary"
-        [routerLink]="['/products/edit', product.id]"
-        matTooltip="Editar"
-      >
-        <mat-icon>edit</mat-icon>
-      </button>
+          mat-icon-button
+          color="primary"
+          [routerLink]="['/products/edit', product.id]"
+          matTooltip="Editar"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
 
         <button mat-icon-button color="warn" (click)="removeProduct(product)" matTooltip="Eliminar">
           <mat-icon>delete</mat-icon>
@@ -59,23 +59,14 @@
       </mat-card-actions>
     </mat-card>
   </div>
+
+  <!-- Paginar solo si hay más de 5 productos -->
+  <mat-paginator
+    *ngIf="filteredProducts.length > 5"
+    [length]="filteredProducts.length"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[5]"
+    (page)="onPageChange($event)">
+  </mat-paginator>
 </div>
-
-<!-- Sección opcional para agregar productos en modo mock
-<mat-card class="add-product-card">
-  <h3>Agregar nuevo producto (simulado)</h3>
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Nombre</mat-label>
-    <input matInput [(ngModel)]="newProduct.name" />
-  </mat-form-field>
-
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Precio</mat-label>
-    <input matInput type="number" [(ngModel)]="newProduct.price" />
-  </mat-form-field>
-
-  <button mat-raised-button color="accent" (click)="addMockProduct()">
-    <mat-icon>add</mat-icon> Agregar
-  </button>
-</mat-card>
- -->

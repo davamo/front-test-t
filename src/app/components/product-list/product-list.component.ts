@@ -17,6 +17,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-product-list',
@@ -34,7 +35,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatListModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatPaginatorModule
   ],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
@@ -42,9 +44,12 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
   filteredProducts: Product[] = [];
+  paginatedProducts: Product[] = [];
   loading = true;
   errorMessage = '';
   searchTerm: string = '';
+  pageSize = 5;
+  pageIndex = 0;
 
   constructor(
     private productService: ProductService,
@@ -72,9 +77,28 @@ export class ProductListComponent implements OnInit {
 
   applyFilter(): void {
     const term = this.searchTerm.trim().toLowerCase();
-    this.filteredProducts = this.products.filter(p =>
+    const filtered = this.products.filter(p =>
       p.name.toLowerCase().includes(term)
     );
+    this.filteredProducts = filtered;
+    this.pageIndex = 0;
+    this.updatePaginatedProducts();
+  }
+
+  updatePaginatedProducts(): void {
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+    this.paginatedProducts = this.filteredProducts.slice(start, end);
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.updatePaginatedProducts();
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.applyFilter();
   }
 
   createProduct(): void {
@@ -89,9 +113,10 @@ export class ProductListComponent implements OnInit {
     console.log('Ver producto:', product);
   }
 
-
   removeProduct(product: Product): void {
     this.productService.deleteProduct(product.id);
+    this.products = this.products.filter(p => p.id !== product.id);
+    this.applyFilter();
     this.snackBar.open('🗑️ Producto eliminado', 'Cerrar', {
       duration: 3000
     });
