@@ -26,3 +26,20 @@
     margin-top: 1rem;
   }
   
+  .add-product-form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 16px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  

@@ -15,13 +15,11 @@
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>Buscar producto</mat-label>
     <input matInput type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
-
     <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Limpiar" (click)="searchTerm=''">
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
 </div>
-
 
 <div class="content">
   <mat-spinner *ngIf="loading" diameter="48"></mat-spinner>
@@ -30,7 +28,6 @@
     {{ errorMessage }}
   </div>
 
-  
   <div class="product-grid" *ngIf="!loading && !errorMessage">
     <mat-card *ngFor="let product of filteredProducts" class="product-card">
       <mat-card-header>
@@ -57,3 +54,22 @@
     </mat-card>
   </div>
 </div>
+
+<!-- Sección opcional para agregar productos en modo mock
+<mat-card class="add-product-card">
+  <h3>Agregar nuevo producto (simulado)</h3>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Nombre</mat-label>
+    <input matInput [(ngModel)]="newProduct.name" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Precio</mat-label>
+    <input matInput type="number" [(ngModel)]="newProduct.price" />
+  </mat-form-field>
+
+  <button mat-raised-button color="accent" (click)="addMockProduct()">
+    <mat-icon>add</mat-icon> Agregar
+  </button>
+</mat-card>
+ -->

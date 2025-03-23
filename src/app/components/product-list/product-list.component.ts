@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
 
-// Angular Common & Router
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router'; 
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 // Angular Material
@@ -24,16 +23,17 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule, 
+    RouterModule,
+    FormsModule,
     MatCardModule,
+    MatIconModule,
+    MatTooltipModule,
     MatButtonModule,
     MatToolbarModule,
     MatProgressSpinnerModule,
-    MatIconModule,
     MatListModule,
-    MatTooltipModule,
+    MatFormFieldModule,
     MatInputModule,
-    FormsModule,
     MatSnackBarModule
   ],
   templateUrl: './product-list.component.html',
@@ -41,21 +41,26 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
+  filteredProducts: Product[] = [];
   loading = true;
   errorMessage = '';
-
   searchTerm: string = '';
-  filteredProducts: Product[] = [];
 
-
-  constructor(private productService: ProductService,
-    private snackBar: MatSnackBar  ) {}
+  constructor(
+    private productService: ProductService,
+    private snackBar: MatSnackBar,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.loadProducts();
+  }
+
+  loadProducts(): void {
     this.productService.getProducts().subscribe({
       next: (data) => {
         this.products = data;
-        this.applyFilter(); // aplicar filtro inicial
+        this.applyFilter();
         this.loading = false;
       },
       error: () => {
@@ -64,7 +69,6 @@ export class ProductListComponent implements OnInit {
       }
     });
   }
-  
 
   applyFilter(): void {
     const term = this.searchTerm.trim().toLowerCase();
@@ -72,11 +76,9 @@ export class ProductListComponent implements OnInit {
       p.name.toLowerCase().includes(term)
     );
   }
-  
 
   createProduct(): void {
-    console.log('Crear producto');
-    // Si decides redirigir desde aquí en lugar de routerLink, usa: this.router.navigate(['/products/add']);
+    this.router.navigate(['/products/add']);
   }
 
   onImageError(event: Event): void {
@@ -88,15 +90,13 @@ export class ProductListComponent implements OnInit {
   }
 
   editProduct(product: Product): void {
-    console.log('Editar producto....:', product);
+    console.log('Editar producto:', product);
   }
 
   removeProduct(product: Product): void {
-    this.products = this.products.filter(p => p.id !== product.id);
-    this.applyFilter();
-    this.snackBar.open('🗑️ Producto eliminado (simulado)', 'Cerrar', {
+    this.productService.deleteProduct(product.id);
+    this.snackBar.open('🗑️ Producto eliminado', 'Cerrar', {
       duration: 3000
     });
   }
-
 }

@@ -11,6 +11,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 
+// Servicio y modelo
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../models/product.model';
+
 @Component({
   selector: 'app-add-product',
   standalone: true,
@@ -33,28 +37,82 @@ export class AddProductComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private productService: ProductService
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
+      title: ['', Validators.required],
+      description: [''],
+      category: ['', Validators.required],
       price: [null, [Validators.required, Validators.min(0)]],
-      image: ['']
+      images: ['']
     });
   }
 
-  onSubmit(): void {
+  onSubmitBack(): void {
+    console.log("data ::::::::::::", this.form.value);
     if (this.form.valid) {
-      const newProduct = this.form.value;
-      console.log('✅ Producto simulado guardado:', newProduct);
+      const formValue = this.form.value;
 
-      this.snackBar.open('Producto agregado con éxito!', 'Cerrar', {
+      // Obtener el ID simulado desde el servicio
+      const newId = this.productService.getNextMockId();
+
+      const newProduct: Product = {
+        id: newId,
+        ...formValue
+      };
+
+      this.productService.addProduct(newProduct);
+
+      this.snackBar.open('✅ Producto agregado con éxito (mock)', 'Cerrar', {
         duration: 3000
       });
 
-      // 🚀 Aquí puedes enviar la data al servicio real si lo necesitas
       this.router.navigate(['/products']);
+    } else {
+      this.snackBar.open('⚠️ Completa todos los campos requeridos.', 'Cerrar', {
+        duration: 3000
+      });
     }
   }
+
+
+  onSubmit(): void {
+    const formValue = this.form.value;
+  
+    // Validación básica: nombre obligatorio
+    if (!formValue.name?.trim()) {
+      this.snackBar.open('⚠️ El nombre del producto es obligatorio.', 'Cerrar', {
+        duration: 3000
+      });
+      return;
+    }
+  
+    const newProduct: Product = {
+      id: this.productService.getNextMockId(), // ID autoincremental simulado
+      name: formValue.name,
+      title: formValue.title,
+      description: formValue.description,
+      category: formValue.category,
+      price: formValue.price,
+      images: formValue.images
+    };
+  
+    // Agregar a la lista simulada
+    this.productService.addProduct(newProduct);
+  
+    this.snackBar.open('✅ Producto agregado (simulado)', 'Cerrar', {
+      duration: 3000
+    });
+  
+    // Reset formulario reactivo
+    this.form.reset();
+  
+    // Volver a la lista
+    this.router.navigate(['/products']);
+  }
+  
 
   cancel(): void {
     this.router.navigate(['/products']);
