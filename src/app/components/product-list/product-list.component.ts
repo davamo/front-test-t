@@ -89,14 +89,16 @@ export class ProductListComponent implements OnInit {
     console.log('Ver producto:', product);
   }
 
-  editProduct(product: Product): void {
-    console.log('Editar producto:', product);
-  }
 
   removeProduct(product: Product): void {
     this.productService.deleteProduct(product.id);
     this.snackBar.open('🗑️ Producto eliminado', 'Cerrar', {
       duration: 3000
     });
+  }
+
+  editProduct(product: Product): void {
+    console.log('Editar producto:', product);
+    this.router.navigate(['/products/edit', product.id]);
   }
 }

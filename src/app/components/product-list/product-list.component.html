@@ -44,9 +44,15 @@
         />
       </mat-card-content>
       <mat-card-actions align="end">
-        <button mat-icon-button color="primary" (click)="editProduct(product)" matTooltip="Editar">
-          <mat-icon>edit</mat-icon>
-        </button>
+        <button
+        mat-icon-button
+        color="primary"
+        [routerLink]="['/products/edit', product.id]"
+        matTooltip="Editar"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+
         <button mat-icon-button color="warn" (click)="removeProduct(product)" matTooltip="Eliminar">
           <mat-icon>delete</mat-icon>
         </button>

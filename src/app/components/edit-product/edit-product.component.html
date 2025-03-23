@@ -1,0 +1,68 @@
+<p>edit-product works!</p>
+<mat-card class="edit-product-form">
+    <h2>Editar Producto</h2>
+  
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <!-- Nombre -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="name" required />
+        <mat-error *ngIf="form.get('name')?.hasError('required')">
+          El nombre es obligatorio.
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Título -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Título</mat-label>
+        <input matInput formControlName="title" required />
+        <mat-error *ngIf="form.get('title')?.hasError('required')">
+          El título es obligatorio.
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Descripción -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Descripción</mat-label>
+        <textarea matInput rows="3" formControlName="description"></textarea>
+      </mat-form-field>
+  
+      <!-- Categoría -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Categoría</mat-label>
+        <input matInput formControlName="category" required />
+        <mat-error *ngIf="form.get('category')?.hasError('required')">
+          La categoría es obligatoria.
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Precio -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Precio</mat-label>
+        <input matInput type="number" formControlName="price" required />
+        <mat-error *ngIf="form.get('price')?.hasError('required')">
+          El precio es obligatorio.
+        </mat-error>
+        <mat-error *ngIf="form.get('price')?.hasError('min')">
+          El precio debe ser mayor o igual a 0.
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Imagen -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>URL de imagen</mat-label>
+        <input matInput formControlName="images" />
+      </mat-form-field>
+  
+      <!-- Botones -->
+      <div class="actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid" aria-label="Guardar cambios">
+          Guardar
+        </button>
+        <button mat-button type="button" (click)="cancel()" aria-label="Cancelar edición">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </mat-card>
+  

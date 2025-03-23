@@ -69,4 +69,31 @@ export class ProductService {
     console.log(`🗑️ Producto con ID ${id} eliminado`);
   }
   
+
+  getProductById(id: number): Product | undefined {
+    return this.productsSubject.getValue().find(p => p.id === id);
+  }
+  
+  updateProduct(updatedProduct: Product): void {
+    const products = this.productsSubject.getValue().map(p =>
+      p.id === updatedProduct.id ? { ...updatedProduct } : p
+    );
+  
+    this.productsSubject.next(products);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(products));
+  
+    console.log(`✏️ Producto actualizado:`, updatedProduct);
+  }
+  
+  clearProducts(): void {
+    this.productsSubject.next([]);
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+  
+    console.log('🧹 Productos eliminados');
+  }
+
+  editProduct(product: Product): void {
+    console.log('Editar producto....:', product);
+  }
+
 }
