@@ -14,7 +14,11 @@
 <div class="search-container">
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>Buscar producto</mat-label>
-    <input matInput type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()" />
+    <input 
+          matInput 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (ngModelChange)="applyFilter()" />
     <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Limpiar" (click)="clearSearch()">
       <mat-icon>close</mat-icon>
     </button>
@@ -31,17 +35,17 @@
   <div class="product-grid" *ngIf="!loading && !errorMessage">
     <mat-card *ngFor="let product of paginatedProducts" class="product-card">
       <mat-card-header>
-        <mat-card-title>{{ product.name }}</mat-card-title>
-        <mat-card-subtitle>${{ product.price }}</mat-card-subtitle>
+        <mat-card-title>{{ product.title }}</mat-card-title>
+        <mat-card-subtitle>{{ product.category.name }} - ${{ product.price }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <img
-          *ngIf="product.images"
-          [src]="product.images"
+          [src]="product.images.length ? product.images[0] : '/images/paisajeamarillo.png'"
           (error)="onImageError($event)"
-          alt="{{ product.name }}"
+          alt="{{ product.title }}"
           class="product-image"
         />
+        <p>{{ product.description }}</p>
       </mat-card-content>
       <mat-card-actions align="end">
         <button
@@ -53,20 +57,22 @@
           <mat-icon>edit</mat-icon>
         </button>
 
-        <button mat-icon-button color="warn" (click)="removeProduct(product)" matTooltip="Eliminar">
+
+        <button mat-icon-button color="warn" (click)="confirmDelete(product)" matTooltip="Eliminar">
           <mat-icon>delete</mat-icon>
         </button>
+        
+
       </mat-card-actions>
     </mat-card>
   </div>
 
-  <!-- Paginar solo si hay más de 5 productos -->
   <mat-paginator
-    *ngIf="filteredProducts.length > 5"
+    *ngIf="filteredProducts.length > pageSize"
     [length]="filteredProducts.length"
     [pageSize]="pageSize"
     [pageIndex]="pageIndex"
-    [pageSizeOptions]="[5]"
+    [pageSizeOptions]="[5, 10, 15]"
     (page)="onPageChange($event)">
   </mat-paginator>
 </div>

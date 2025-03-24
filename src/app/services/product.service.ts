@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, catchError, of } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { Product } from '../models/product.model';
+import { CreateProductDto } from '../models/create-product.dto';
+import { UpdateProductDto } from '../models/update-product.dto';
 
 const LOCAL_STORAGE_KEY = 'mock_products';
 
@@ -9,91 +13,112 @@ const LOCAL_STORAGE_KEY = 'mock_products';
 })
 export class ProductService {
   private productsSubject: BehaviorSubject<Product[]>;
+  private apiUrl: string = environment.apiBaseURL;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     const savedProducts = localStorage.getItem(LOCAL_STORAGE_KEY);
-    const initialProducts: Product[] = savedProducts
-      ? JSON.parse(savedProducts)
-      : [
-          {
-            id: 1,
-            name: 'Mock 1',
-            title: 'Mock Title 1',
-            description: 'Mock Description 1',
-            category: 'Category1',
-            price: 19990,
-            images: ''
-          },
-          {
-            id: 2,
-            name: 'Mock 2',
-            title: 'Mock Title 2',
-            description: 'Mock Description 2',
-            category: 'Category2',
-            price: 29990,
-            images: ''
-          }
-        ];
-
+    const initialProducts: Product[] = savedProducts ? JSON.parse(savedProducts) : [];
     this.productsSubject = new BehaviorSubject<Product[]>(initialProducts);
   }
 
   getProducts(): Observable<Product[]> {
-    return this.productsSubject.asObservable();
-  }
-
-  getNextMockId(): number {
-    const products = this.productsSubject.getValue();
-    return products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-  }
-
-  addProduct(product: Product): void {
-    const newProduct = { ...product, id: this.getNextMockId() };
-    const updatedProducts = [...this.productsSubject.getValue(), newProduct];
-
-    this.productsSubject.next(updatedProducts);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedProducts));
-
-    console.log('✅ Producto agregado:', newProduct);
-    console.log('🧾 Lista persistida:', updatedProducts);
-  }
-
-  deleteProduct(id: number): void {
-    const updatedProducts = this.productsSubject
-      .getValue()
-      .filter(product => product.id !== id);
-  
-    this.productsSubject.next(updatedProducts);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedProducts));
-  
-    console.log(`🗑️ Producto con ID ${id} eliminado`);
-  }
-  
-
-  getProductById(id: number): Product | undefined {
-    return this.productsSubject.getValue().find(p => p.id === id);
-  }
-  
-  updateProduct(updatedProduct: Product): void {
-    const products = this.productsSubject.getValue().map(p =>
-      p.id === updatedProduct.id ? { ...updatedProduct } : p
+    return this.http.get<Product[]>(`${this.apiUrl}`).pipe(
+      catchError(error => {
+        console.error('Error al obtener productos, usando mock:', error);
+        return of(this.productsSubject.getValue());
+      })
     );
-  
-    this.productsSubject.next(products);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(products));
-  
-    console.log(`✏️ Producto actualizado:`, updatedProduct);
   }
-  
+
+  addProduct(product: CreateProductDto): Observable<Product> {
+    return this.http.post<Product>(`${this.apiUrl}`, product).pipe(
+      catchError(error => {
+        console.error('Error al agregar producto, usando mock:', error);
+        const newProduct: Product = {
+          id: this.getNextMockId(),
+          name: '',
+          title: product.title,
+          description: product.description,
+          price: product.price,
+          images: product.images,
+          category: {
+            id: product.categoryId,
+            name: 'Mock Category',
+            typeImg: 'mock'
+          }
+        };
+
+        const updatedProducts = [...this.productsSubject.getValue(), newProduct];
+        this.productsSubject.next(updatedProducts);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedProducts));
+
+        return of(newProduct);
+      })
+    );
+  }
+
+  updateProduct(id: number, product: UpdateProductDto): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/${id}`, product).pipe(
+      catchError(error => {
+        console.error('Error al actualizar producto, usando mock:', error);
+
+        const original = this.productsSubject.getValue().find(p => p.id === id);
+        if (!original) return of(undefined as any);
+
+        const updated: Product = {
+          ...original,
+          ...product,
+          category: {
+            id: product.categoryId ?? original.category.id,
+            name: 'Mock Category',
+            typeImg: 'mock'
+          }
+        };
+
+        const products = this.productsSubject.getValue().map(p =>
+          p.id === id ? updated : p
+        );
+
+        this.productsSubject.next(products);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(products));
+
+        return of(updated);
+      })
+    );
+  }
+
+  deleteProduct(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+      catchError(error => {
+        console.error('Error al eliminar producto, usando mock:', error);
+        const updatedProducts = this.productsSubject.getValue().filter(product => product.id !== id);
+
+        this.productsSubject.next(updatedProducts);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedProducts));
+
+        return of(null);
+      })
+    );
+  }
+
+  getProductById(id: number): Observable<Product | undefined> {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`).pipe(
+      catchError(error => {
+        console.error('Error al obtener producto por ID, usando mock:', error);
+        const product = this.productsSubject.getValue().find(p => p.id === id);
+        return of(product);
+      })
+    );
+  }
+
   clearProducts(): void {
     this.productsSubject.next([]);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
-  
     console.log('🧹 Productos eliminados');
   }
 
-  editProduct(product: Product): void {
-    console.log('Editar producto....:', product);
+  private getNextMockId(): number {
+    const products = this.productsSubject.getValue();
+    return products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
   }
-
 }

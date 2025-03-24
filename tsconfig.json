@@ -20,7 +20,8 @@
     "lib": ["es6", "dom"],
     "types": ["cypress"],
     "strict": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true
 
   },
   "include": ["cypress/**/*.ts"],

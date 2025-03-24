@@ -18,6 +18,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-product-list',
@@ -36,7 +38,9 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule,
+    ConfirmDialogComponent
   ],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
@@ -54,7 +58,9 @@ export class ProductListComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
+
   ) {}
 
   ngOnInit(): void {
@@ -77,10 +83,13 @@ export class ProductListComponent implements OnInit {
 
   applyFilter(): void {
     const term = this.searchTerm.trim().toLowerCase();
-    const filtered = this.products.filter(p =>
-      p.name.toLowerCase().includes(term)
+    this.filteredProducts = this.products.filter(p =>
+      (p.title && p.title.toLowerCase().includes(term)) ||
+      (p.name && p.name.toLowerCase().includes(term)) ||
+      (p.description && p.description.toLowerCase().includes(term)) ||
+      (p.category && p.category.name && p.category.name.toLowerCase().includes(term))
     );
-    this.filteredProducts = filtered;
+
     this.pageIndex = 0;
     this.updatePaginatedProducts();
   }
@@ -106,7 +115,7 @@ export class ProductListComponent implements OnInit {
   }
 
   onImageError(event: Event): void {
-    (event.target as HTMLImageElement).src = 'assets/images/notimage.png';
+    (event.target as HTMLImageElement).src = '/images/paisajeamarillo.png';
   }
 
   viewProduct(product: Product): void {
@@ -114,11 +123,16 @@ export class ProductListComponent implements OnInit {
   }
 
   removeProduct(product: Product): void {
-    this.productService.deleteProduct(product.id);
-    this.products = this.products.filter(p => p.id !== product.id);
-    this.applyFilter();
-    this.snackBar.open('🗑️ Producto eliminado', 'Cerrar', {
-      duration: 3000
+    this.productService.deleteProduct(product.id).subscribe({
+      next: () => {
+        this.products = this.products.filter(p => p.id !== product.id);
+        this.applyFilter();
+        this.snackBar.open('🗑️ Producto eliminado', 'Cerrar', { duration: 3000 });
+      },
+      error: (err) => {
+        console.error('Error al eliminar producto:', err);
+        this.snackBar.open('❌ Error al eliminar el producto', 'Cerrar', { duration: 3000 });
+      }
     });
   }
 
@@ -126,4 +140,15 @@ export class ProductListComponent implements OnInit {
     console.log('Editar producto:', product);
     this.router.navigate(['/products/edit', product.id]);
   }
+
+  confirmDelete(product: Product): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.removeProduct(product);
+      }
+    });
+  }
+  
 }
