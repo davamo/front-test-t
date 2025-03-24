@@ -12,20 +12,20 @@ const mockProducts: Product[] = [
   {
     id: 1,
     name: 'Producto Uno',
-    images: 'https://via.placeholder.com/150',
+    images: ['https://via.placeholder.com/150'],
     price: 10000,
     title: 'Zapato de cuero',
     description: 'Zapato cómodo de cuero sintético.',
-    category: 'Calzado'
+    category: { id: 1, name: 'Calzado', typeImg: '' }
   },
   {
     id: 2,
     name: 'Producto Dos',
-    images: 'https://via.placeholder.com/150',
+    images: ['https://via.placeholder.com/150'],
     price: 20000,
     title: 'Chaqueta impermeable',
     description: 'Ideal para días lluviosos.',
-    category: 'Ropa'
+    category: { id: 2, name: 'Ropa', typeImg: '' }
   }
 ];
 
@@ -58,11 +58,15 @@ describe('ProductListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load and display mock products', () => {
+  it('should load and display mock products', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+
     const cards = fixture.debugElement.queryAll(By.css('mat-card'));
     expect(cards.length).toBe(2);
 
-    const firstTitle = cards[0].query(By.css('mat-card-title')).nativeElement.textContent;
-    expect(firstTitle).toContain(mockProducts[0].name);
+    const titleElement = cards[0].nativeElement.querySelector('h3');
+    expect(titleElement).toBeTruthy();
+    expect(titleElement.textContent).toContain(mockProducts[0].title);
   });
 });

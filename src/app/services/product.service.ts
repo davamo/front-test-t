@@ -13,7 +13,8 @@ const LOCAL_STORAGE_KEY = 'mock_products';
 })
 export class ProductService {
   private productsSubject: BehaviorSubject<Product[]>;
-  private apiUrl: string = environment.apiBaseURL;
+  private apiUrl: string = environment.apiBaseURL + '/products';
+
 
   constructor(private http: HttpClient) {
     const savedProducts = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -121,4 +122,9 @@ export class ProductService {
     const products = this.productsSubject.getValue();
     return products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
   }
+
+  checkCategoryExists(categoryId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/categories/exists/${categoryId}`);
+  }
+  
 }

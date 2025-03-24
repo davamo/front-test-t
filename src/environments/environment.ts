@@ -1,7 +1,5 @@
 export const environment = {
-  //apiBaseURL: 'https://young-sands-07814.herokuapp.com/api',
-  apiBaseURL:  'https://young-sands-07814.herokuapp.com/api/products',
-
+  apiBaseURL: 'https://young-sands-07814.herokuapp.com/api',
   apiVersion: 'v3',
   /**
    * Interfaces time Delays

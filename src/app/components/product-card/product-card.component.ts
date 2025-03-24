@@ -28,13 +28,13 @@ export class ProductCardComponent {
 
   getSafeImage(url: string): string {
     const validExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  
+
     if (!url) return '/images/paisajeamarillo.png';
-  
-    const extension = url.split('.').pop()?.toLowerCase().split('?')[0] ?? '';
-    const isValid = validExtensions.some(ext => extension.includes(ext));
-  
+
+    const cleanUrl = url.split('?')[0];
+    const extension = cleanUrl.substring(cleanUrl.lastIndexOf('.')).toLowerCase();
+
+    const isValid = validExtensions.some(ext => extension === ext);
     return isValid ? url : '/images/paisajeamarillo.png';
   }
-  
 }

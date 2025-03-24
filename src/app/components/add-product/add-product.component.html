@@ -1,4 +1,5 @@
 <mat-card class="add-product-form">
+
   <h2>Agregar Producto</h2>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -26,21 +27,22 @@
     <!-- Descripción -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Descripción</mat-label>
-      <textarea matInput rows="3" formControlName="description" required></textarea>
-      <mat-error *ngIf="form.get('description')?.hasError('required')">
-        La descripción es obligatoria.
-      </mat-error>
+      <textarea matInput rows="3" formControlName="description"></textarea>
     </mat-form-field>
 
-    <!-- ID Categoría -->
+    <!-- Categoría -->
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>ID de Categoría</mat-label>
-      <input matInput type="number" formControlName="categoryId" required />
+      <mat-label>Selecciona Categoría</mat-label>
+      <mat-select formControlName="categoryId" required>
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+      </mat-select>
       <mat-error *ngIf="form.get('categoryId')?.hasError('required')">
-        El ID de la categoría es obligatorio.
+        El ID de categoría es obligatorio.
       </mat-error>
       <mat-error *ngIf="form.get('categoryId')?.hasError('min')">
-        El ID debe ser un número válido mayor a 0.
+        El ID debe ser mayor a 0.
       </mat-error>
     </mat-form-field>
 
@@ -60,10 +62,10 @@
 
     <!-- Botones -->
     <div class="actions">
-      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid" aria-label="Guardar producto">
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
         Guardar
       </button>
-      <button mat-button type="button" (click)="cancel()" aria-label="Cancelar">
+      <button mat-button type="button" (click)="cancel()">
         Cancelar
       </button>
     </div>
