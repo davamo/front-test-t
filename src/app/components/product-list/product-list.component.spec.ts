@@ -11,7 +11,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 const mockProducts: Product[] = [
   {
     id: 1,
-    name: 'Producto Uno',
     images: ['https://via.placeholder.com/150'],
     price: 10000,
     title: 'Zapato de cuero',
@@ -20,7 +19,6 @@ const mockProducts: Product[] = [
   },
   {
     id: 2,
-    name: 'Producto Dos',
     images: ['https://via.placeholder.com/150'],
     price: 20000,
     title: 'Chaqueta impermeable',

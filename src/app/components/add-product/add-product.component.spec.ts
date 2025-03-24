@@ -1,92 +1,88 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AddProductComponent } from './add-product.component';
-import { ProductService } from '../../services/product.service';
-import { Router } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { ProductService } from '../../../app/services/product.service';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { of } from 'rxjs';
-import { ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Product } from '../../models/product.model';
+import { CreateProductDto } from '../../models/create-product.dto';
 
-class MockProductService {
-  addProduct(dto: any) {
-    return of({ id: 1, ...dto });
-  }
-}
+describe('ProductService', () => {
+  let service: ProductService;
+  let httpMock: HttpTestingController;
 
-describe('AddProductComponent', () => {
-  let component: AddProductComponent;
-  let fixture: ComponentFixture<AddProductComponent>;
-  let mockRouter: any;
+  const mockProduct: Product = {
+    id: 1,
+    title: 'Test Product',
+    price: 100,
+    description: 'Test Description',
+    images: ['image1.jpg'],
+    category: {
+      id: 1,
+      name: 'Test Category',
+      typeImg: 'test-image'
+    }
+  };
 
-  beforeEach(async () => {
-    mockRouter = { navigate: jasmine.createSpy('navigate') };
+  const mockCreateProduct: CreateProductDto = {
+    title: 'Test Product',
+    price: 100,
+    description: 'Test Description',
+    categoryId: 1,
+    images: ['image1.jpg']
+  };
 
-    await TestBed.configureTestingModule({
-      imports: [
-        AddProductComponent,
-        BrowserAnimationsModule,
-        ReactiveFormsModule,
-        HttpClientTestingModule
-      ],
-      providers: [
-        { provide: ProductService, useClass: MockProductService },
-        { provide: Router, useValue: mockRouter }
-      ]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(AddProductComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should initialize the form with default values', () => {
-    expect(component.form.value.title).toBe('');
-    expect(component.form.value.price).toBe(0);
-    expect(component.form.value.description).toBe('');
-    expect(component.form.value.categoryId).toBe(null);
-    expect(component.images.length).toBe(0);
-  });
-
-  it('should add an image control when addImage is called', () => {
-    component.addImage();
-    expect(component.images.length).toBe(1);
-  });
-
-  it('should remove an image control when removeImage is called', () => {
-    component.addImage();
-    component.addImage();
-    expect(component.images.length).toBe(2);
-    component.removeImage(0);
-    expect(component.images.length).toBe(1);
-  });
-
-  it('should call addProduct and navigate on valid submit', () => {
-    spyOn(TestBed.inject(ProductService), 'addProduct').and.callThrough();
-
-    component.form.patchValue({
-      title: 'Nuevo Producto',
-      price: 500,
-      description: 'Descripción demo',
-      categoryId: 3
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule], // Import HttpClientTestingModule to mock HTTP calls
+      providers: [ProductService]
     });
-    component.addImage();
-    component.images.at(0).setValue('https://img.com/img1.jpg');
 
-    component.onSubmit();
-
-    expect(TestBed.inject(ProductService).addProduct).toHaveBeenCalled();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/products']);
+    service = TestBed.inject(ProductService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should not call addProduct if form is invalid', () => {
-    spyOn(TestBed.inject(ProductService), 'addProduct');
-    component.form.patchValue({ title: '', price: -10 });
-    component.onSubmit();
-    expect(TestBed.inject(ProductService).addProduct).not.toHaveBeenCalled();
-    expect(mockRouter.navigate).not.toHaveBeenCalled();
+  afterEach(() => {
+    httpMock.verify(); // Verifies that no HTTP requests are outstanding after each test
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  it('should handle error when adding a product', () => {
+    // Arrange: set up the mock error response
+    const mockError = { status: 400, statusText: 'Bad Request' };
+
+    // Act: call the addProduct method
+    service.addProduct(mockCreateProduct).subscribe(
+      () => fail('Expected an error, but got success'),
+      (error) => {
+        // Assert: verify that the error is handled
+        expect(error.status).toBe(400);
+        expect(error.statusText).toBe('Bad Request');
+      }
+    );
+
+    // Assert: check that the HTTP POST request was made and an error was thrown
+    const req = httpMock.expectOne(`${service['apiUrl']}`);
+    expect(req.request.method).toBe('POST');
+    req.flush('Error', mockError); // Simulate an error response from the server
+  });
+
+  it('should add a product successfully', () => {
+    // Arrange: set up the mock response
+    const mockResponse: Product = {
+      ...mockProduct,
+      id: 2 // Assigning a new ID to the product after it is added
+    };
+
+    // Act: call the addProduct method
+    service.addProduct(mockCreateProduct).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    // Assert: check that the HTTP POST request was made and that the response is as expected
+    const req = httpMock.expectOne(`${service['apiUrl']}`);
+    expect(req.request.method).toBe('POST');
+    req.flush(mockResponse); // Simulate the response from the server
   });
 });

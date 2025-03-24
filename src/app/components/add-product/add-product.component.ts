@@ -36,6 +36,12 @@ import { MatOptionModule } from '@angular/material/core';
   styleUrls: ['./add-product.component.scss']
 })
 export class AddProductComponent implements OnInit {
+  routerAccessor(routerAccessor: any, arg1: string) {
+    throw new Error('Method not implemented.');
+  }
+  productServiceAccessor(productServiceAccessor: any, arg1: string) {
+    throw new Error('Method not implemented.');
+  }
   form: FormGroup;
   categories: any[] = []; 
 
@@ -111,5 +117,9 @@ export class AddProductComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/products']);
+  }
+
+  openSnackBar({ message, action }: { message: string; action: string; }) {
+    this.snackBar.open(message, action, { duration: 3000 });
   }
 }

@@ -13,7 +13,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 
-// Servicios
+// Services
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { Product } from '../../models/product.model';
@@ -24,7 +24,6 @@ import { UpdateProductDto } from '../../models/update-product.dto';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -32,7 +31,8 @@ import { UpdateProductDto } from '../../models/update-product.dto';
     MatIconModule,
     MatSnackBarModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+    ReactiveFormsModule
   ],
   templateUrl: './edit-product.component.html',
   styleUrls: ['./edit-product.component.scss']
@@ -41,7 +41,7 @@ export class EditProductComponent implements OnInit {
   form: FormGroup;
   productId!: number;
   product!: Product;
-  categories: any[] = []; // Array de categorías disponibles
+  categories: any[] = []; // Array of available categories
 
   constructor(
     private fb: FormBuilder,
@@ -55,62 +55,46 @@ export class EditProductComponent implements OnInit {
       title: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
       description: ['', Validators.required],
-      category: this.fb.group({
-        id: [null, [Validators.required, Validators.min(1)]],  // Ensure `category.id` is required
-        name: ['', Validators.required],  // Name is also required
-        typeImg: ['']
-      }),
-      images: this.fb.array([]),
+      categoryId: [null, [Validators.required, Validators.min(1)]],
+      images: this.fb.array([])
     });
-    
   }
 
   ngOnInit(): void {
     this.productId = Number(this.route.snapshot.paramMap.get('id'));
 
-    // Obtener las categorías disponibles
+    // Get available categories
     this.categoryService.getCategories().subscribe(
       (categories) => {
-        this.categories = categories; // Cargar las categorías
+        this.categories = categories; // Load categories
       },
       (error) => {
-        this.snackBar.open('❌ Error al obtener las categorías', 'Cerrar', { duration: 3000 });
+        this.openSnackBar('❌ Error al obtener las categorías', 'Cerrar');
       }
     );
 
-    // Obtener el producto actual
+    // Get current product
     this.productService.getProductById(this.productId).subscribe(product => {
       if (!product) {
-        this.snackBar.open('⚠️ Producto no encontrado', 'Cerrar', { duration: 3000 });
+        this.openSnackBar('⚠️ Producto no encontrado', 'Cerrar');
         this.router.navigate(['/products']);
         return;
       }
-    
+
       this.product = product;
-    
-      // Patch the form with product details, including category data
       this.form.patchValue({
         title: product.title,
         price: product.price,
         description: product.description,
-        category: {
-          id: product.category.id,   // Load the category id
-          name: product.category.name,  // Load the category name
-          typeImg: product.category.typeImg   // Load the category typeImg
-        }
+        categoryId: product.category.name 
       });
-    
+
       this.setImages(product.images);
     });
-    
   }
 
   get images(): FormArray {
     return this.form.get('images') as FormArray;
-  }
-
-  get categoryGroup(): FormGroup {
-    return this.form.get('category') as FormGroup;
   }
 
   setImages(images: string[]): void {
@@ -128,31 +112,36 @@ export class EditProductComponent implements OnInit {
 
   onSubmit(): void {
     if (this.form.invalid) {
-      this.snackBar.open('⚠️ Completa todos los campos requeridos.', 'Cerrar', { duration: 3000 });
+      this.openSnackBar('⚠️ Completa todos los campos requeridos.', 'Cerrar');
       return;
     }
-  
+
     const rawValue = this.form.getRawValue();
     const updatedProduct: UpdateProductDto = {
       title: rawValue.title,
       price: rawValue.price,
       description: rawValue.description,
-      categoryId: rawValue.category.id, // Make sure the selected categoryId is sent
+      categoryId: rawValue.categoryId, 
       images: rawValue.images
     };
-  
+
     this.productService.updateProduct(this.productId, updatedProduct).subscribe({
       next: () => {
-        this.snackBar.open('✅ Producto actualizado con éxito', 'Cerrar', { duration: 3000 });
+        this.openSnackBar('✅ Producto actualizado con éxito', 'Cerrar');
         this.router.navigate(['/products']);
       },
       error: () => {
-        this.snackBar.open('❌ Error al actualizar el producto', 'Cerrar', { duration: 3000 });
+        this.openSnackBar('❌ Error al actualizar el producto', 'Cerrar');
       }
     });
   }
-  
+
   cancel(): void {
     this.router.navigate(['/products']);
   }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, { duration: 3000 });
+  }
+  
 }

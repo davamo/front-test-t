@@ -37,7 +37,6 @@ export class ProductService {
         console.error('Error al agregar producto, usando mock:', error);
         const newProduct: Product = {
           id: this.getNextMockId(),
-          name: '',
           title: product.title,
           description: product.description,
           price: product.price,

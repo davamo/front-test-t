@@ -11,7 +11,6 @@ describe('ProductCardComponent', () => {
 
   const mockProduct: Product = {
     id: 1,
-    name: 'Producto de prueba',
     title: 'Título de prueba',
     price: 19990,
     description: 'Descripción de prueba',

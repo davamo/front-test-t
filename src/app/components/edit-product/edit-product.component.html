@@ -29,13 +29,11 @@
       <textarea matInput rows="3" formControlName="description"></textarea>
     </mat-form-field>
 
-    <!-- Categoría -->
+    <!-- Categoría (solo lectura) -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Nombre de Categoría</mat-label>
-      <input matInput [value]="form.get('category.name')?.value" readonly />
+      <input matInput [value]="form.get('categoryId')?.value" readonly />
     </mat-form-field>
-    
-    
 
     <!-- Imágenes -->
     <div formArrayName="images">
