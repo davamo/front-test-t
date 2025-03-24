@@ -15,10 +15,10 @@
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>Buscar producto</mat-label>
     <input 
-          matInput 
-          type="text" 
-          [(ngModel)]="searchTerm" 
-          (ngModelChange)="applyFilter()" />
+      matInput 
+      type="text" 
+      [(ngModel)]="searchTerm" 
+      (ngModelChange)="applyFilter()" />
     <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Limpiar" (click)="clearSearch()">
       <mat-icon>close</mat-icon>
     </button>
@@ -33,38 +33,11 @@
   </div>
 
   <div class="product-grid" *ngIf="!loading && !errorMessage">
-    <mat-card *ngFor="let product of paginatedProducts" class="product-card">
-      <mat-card-header>
-        <mat-card-title>{{ product.title }}</mat-card-title>
-        <mat-card-subtitle>{{ product.category.name }} - ${{ product.price }}</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <img
-          [src]="product.images.length ? product.images[0] : '/images/paisajeamarillo.png'"
-          (error)="onImageError($event)"
-          alt="{{ product.title }}"
-          class="product-image"
-        />
-        <p>{{ product.description }}</p>
-      </mat-card-content>
-      <mat-card-actions align="end">
-        <button
-          mat-icon-button
-          color="primary"
-          [routerLink]="['/products/edit', product.id]"
-          matTooltip="Editar"
-        >
-          <mat-icon>edit</mat-icon>
-        </button>
-
-
-        <button mat-icon-button color="warn" (click)="confirmDelete(product)" matTooltip="Eliminar">
-          <mat-icon>delete</mat-icon>
-        </button>
-        
-
-      </mat-card-actions>
-    </mat-card>
+    <app-product-card
+      *ngFor="let product of paginatedProducts"
+      [product]="product"
+      (delete)="confirmDelete(product)"
+    ></app-product-card>
   </div>
 
   <mat-paginator

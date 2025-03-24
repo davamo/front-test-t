@@ -1,0 +1,31 @@
+<mat-card class="product-card">
+  <div class="image-gallery">
+    <img
+      [src]="getSafeImage(product.images[selectedImageIndex])"
+      (error)="onImageError($event)"
+      alt="{{ product.title }}"
+      class="main-image"
+    />
+    <div class="thumbnails" *ngIf="product.images.length > 1">
+      <img
+        *ngFor="let img of product.images; let i = index"
+        [src]="getSafeImage(img)"
+        [class.selected]="i === selectedImageIndex"
+        (click)="selectedImageIndex = i"
+        alt="thumb"
+      />
+    </div>
+  </div>
+
+  <mat-card-content>
+    <h3>{{ product.title }}</h3>
+    <p class="category">{{ product.category.name }}</p>
+    <p class="price">\${{ product.price }}</p>
+    <p class="description">{{ product.description }}</p>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button mat-button color="primary" [routerLink]="['/products/edit', product.id]">Edit</button>
+    <button mat-stroked-button color="warn" (click)="onDelete()">Delete</button>
+  </mat-card-actions>
+</mat-card>

@@ -21,6 +21,8 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
+import { ProductCardComponent } from '../product-card/product-card.component';
+
 @Component({
   selector: 'app-product-list',
   standalone: true,
@@ -40,7 +42,8 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
     MatSnackBarModule,
     MatPaginatorModule,
     MatDialogModule,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ProductCardComponent
   ],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
