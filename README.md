@@ -112,7 +112,7 @@ Todos los campos, botones e íconos relevantes usan `data-cy`, por ejemplo:
 
 ## 👨‍💼 Desarrollador
 
-> Proyecto desarrollado por [Tu Nombre o GitHub](https://github.com/tu-usuario)
+> Proyecto desarrollado por [davamo](https://github.com/davamo)
 
 ---
 
