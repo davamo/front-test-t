@@ -1,0 +1,19 @@
+[
+    {
+      "id": 1,
+      "title": "Laptop HP",
+      "description": "Potente laptop para desarrollo",
+      "price": 99990,
+      "images": ["https://example.com/laptop.jpg"],
+      "category": { "id": 1, "name": "Tecnología" }
+    },
+    {
+      "id": 2,
+      "title": "Aspiradora Robot",
+      "description": "Limpieza automática para tu hogar",
+      "price": 79990,
+      "images": ["https://example.com/aspiradora.jpg"],
+      "category": { "id": 2, "name": "Hogar" }
+    }
+  ]
+  

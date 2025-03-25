@@ -7,16 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-confirm-dialog',
   standalone: true,
   imports: [MatDialogModule, MatButtonModule],
-  template: `
-    <h2 mat-dialog-title>Confirmar eliminación</h2>
-    <mat-dialog-content>
-      ¿Estás seguro que deseas eliminar este producto?
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancelar</button>
-      <button mat-raised-button color="warn" [mat-dialog-close]="true">Eliminar</button>
-    </mat-dialog-actions>
-  `
+  templateUrl: './confirm-dialog.component.html',
+  styleUrls: ['./confirm-dialog.component.scss']  
 })
 export class ConfirmDialogComponent {
   constructor(

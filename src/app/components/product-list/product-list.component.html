@@ -1,42 +1,55 @@
-<mat-toolbar color="primary" class="toolbar">
-  <span class="title">Productos disponibles</span>
+<mat-toolbar color="primary" class="toolbar" data-cy="toolbar">
+  <span class="title" data-cy="toolbar-title">Productos disponibles</span>
   <span class="spacer"></span>
   <button
-    mat-fab
+    mat-raised-button
     color="accent"
     aria-label="Agregar producto"
     [routerLink]="['/products/add']"
+    data-cy="add-product-button"
   >
     <mat-icon>add</mat-icon>
+    Agregar producto
   </button>
 </mat-toolbar>
 
-<div class="search-container">
-  <mat-form-field appearance="outline" class="search-field">
+<div class="search-container" data-cy="search-container">
+  <mat-form-field appearance="outline" class="search-field" data-cy="search-field">
     <mat-label>Buscar producto</mat-label>
     <input 
       matInput 
       type="text" 
+      placeholder="Buscar Producto"
       [(ngModel)]="searchTerm" 
-      (ngModelChange)="applyFilter()" />
-    <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Limpiar" (click)="clearSearch()">
+      (ngModelChange)="applyFilter()"
+      data-cy="search-input"
+    />
+    <button 
+      *ngIf="searchTerm" 
+      matSuffix 
+      mat-icon-button 
+      aria-label="Limpiar" 
+      (click)="clearSearch()" 
+      data-cy="clear-search-button"
+    >
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
 </div>
 
-<div class="content">
-  <mat-spinner *ngIf="loading" diameter="48"></mat-spinner>
+<div class="content" data-cy="product-list-content">
+  <mat-spinner *ngIf="loading" diameter="48" data-cy="loading-spinner"></mat-spinner>
 
-  <div *ngIf="!loading && errorMessage" class="error">
+  <div *ngIf="!loading && errorMessage" class="error" data-cy="error-message">
     {{ errorMessage }}
   </div>
 
-  <div class="product-grid" *ngIf="!loading && !errorMessage">
+  <div class="product-grid" *ngIf="!loading && !errorMessage" data-cy="product-grid">
     <app-product-card
       *ngFor="let product of paginatedProducts"
       [product]="product"
       (delete)="confirmDelete(product)"
+      data-cy="product-card"
     ></app-product-card>
   </div>
 
@@ -46,6 +59,8 @@
     [pageSize]="pageSize"
     [pageIndex]="pageIndex"
     [pageSizeOptions]="[5, 10, 15]"
-    (page)="onPageChange($event)">
+    (page)="onPageChange($event)"
+    data-cy="paginator"
+  >
   </mat-paginator>
 </div>

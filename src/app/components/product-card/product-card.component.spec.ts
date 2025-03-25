@@ -1,35 +1,37 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProductCardComponent } from './product-card.component';
 import { Product } from '../../models/product.model';
-import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProductCardComponent', () => {
   let component: ProductCardComponent;
   let fixture: ComponentFixture<ProductCardComponent>;
+  let routerSpy: jasmine.SpyObj<Router>;
 
   const mockProduct: Product = {
     id: 1,
-    title: 'Título de prueba',
-    price: 19990,
-    description: 'Descripción de prueba',
-    images: ['https://example.com/image.png'],
+    title: 'Laptop HP',
+    price: 99990,
+    description: 'Potente laptop de alto rendimiento',
+    images: ['https://example.com/laptop.jpg'],
     category: {
-      id: 1,
-      name: 'Categoría Prueba',
-      typeImg: 'categoría-icono'
+      id: 1, name: 'Tecnología',
+      typeImg: ''
     }
   };
 
   beforeEach(async () => {
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+
     await TestBed.configureTestingModule({
-      imports: [
-        ProductCardComponent,
-        RouterTestingModule,
-        MatCardModule,
-        MatButtonModule
-      ]
+      declarations: [ProductCardComponent],
+      imports: [MatCardModule, MatIconModule, MatButtonModule, NoopAnimationsModule],
+      providers: [{ provide: Router, useValue: routerSpy }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProductCardComponent);
@@ -38,26 +40,36 @@ describe('ProductCardComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
+  it('debería mostrar título, precio y descripción del producto', () => {
+    const card = fixture.nativeElement as HTMLElement;
+    expect(card.textContent).toContain(mockProduct.title);
+    expect(card.textContent).toContain(mockProduct.price.toString());
+    expect(card.textContent).toContain(mockProduct.description);
+    expect(card.textContent).toContain(mockProduct.category.name);
   });
 
-  describe('getSafeImage()', () => {
-    it('should return the same URL if it has a valid image extension', () => {
-      const url = 'https://example.com/image.png';
-      const urlWithQuery = 'https://example.com/image.jpg?r=123';
+  it('debería navegar a la vista de edición al hacer clic en el botón editar', () => {
+    const editButton = fixture.debugElement.query(By.css('[data-cy="edit-button"]'));
+    editButton.triggerEventHandler('click', null);
 
-      expect(component.getSafeImage(url)).toBe(url);
-      expect(component.getSafeImage(urlWithQuery)).toBe(urlWithQuery);
-    });
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/products/edit', mockProduct.id]);
+  });
 
-    it('should return fallback image for URLs with invalid or no extension', () => {
-      const fallback = '/images/paisajeamarillo.png';
+  it('debería emitir el evento delete al hacer clic en eliminar', () => {
+    spyOn(component.delete, 'emit');
+    const deleteButton = fixture.debugElement.query(By.css('[data-cy="delete-button"]'));
+    deleteButton.triggerEventHandler('click', null);
 
-      expect(component.getSafeImage('')).toBe(fallback);
-      expect(component.getSafeImage('https://example.com/image')).toBe(fallback);
-      expect(component.getSafeImage('https://example.com/file.txt')).toBe(fallback);
-      expect(component.getSafeImage('https://example.com/image.exe')).toBe(fallback);
-    });
+    expect(component.delete.emit).toHaveBeenCalledWith(mockProduct);
+  });
+
+  it('debería mostrar imagen de respaldo si la principal falla', () => {
+    const image = fixture.debugElement.query(By.css('img')).nativeElement as HTMLImageElement;
+
+    // Simular evento de error
+    image.src = 'https://badurl.com';
+    component.onImageError({ target: image } as unknown as Event);
+
+    expect(image.src).toContain('/assets/placeholder.png');
   });
 });

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-// Material
+// Angular Material
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +13,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 
-// Services
+// Servicios y modelos
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { Product } from '../../models/product.model';
@@ -41,7 +41,7 @@ export class EditProductComponent implements OnInit {
   form: FormGroup;
   productId!: number;
   product!: Product;
-  categories: any[] = []; // Array of available categories
+  categories: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -63,17 +63,17 @@ export class EditProductComponent implements OnInit {
   ngOnInit(): void {
     this.productId = Number(this.route.snapshot.paramMap.get('id'));
 
-    // Get available categories
+    // Obtener categorías
     this.categoryService.getCategories().subscribe(
       (categories) => {
-        this.categories = categories; // Load categories
+        this.categories = categories;
       },
       (error) => {
         this.openSnackBar('❌ Error al obtener las categorías', 'Cerrar');
       }
     );
 
-    // Get current product
+    // Obtener producto por ID
     this.productService.getProductById(this.productId).subscribe(product => {
       if (!product) {
         this.openSnackBar('⚠️ Producto no encontrado', 'Cerrar');
@@ -82,14 +82,18 @@ export class EditProductComponent implements OnInit {
       }
 
       this.product = product;
+
+      // ✅ Asignar correctamente el ID de la categoría
       this.form.patchValue({
         title: product.title,
         price: product.price,
         description: product.description,
-        categoryId: product.category.name 
+        categoryId: product.category.id
       });
 
       this.setImages(product.images);
+
+      console.log('✅ Producto cargado para edición:', this.form.value);
     });
   }
 
@@ -116,21 +120,17 @@ export class EditProductComponent implements OnInit {
       return;
     }
 
-    const rawValue = this.form.getRawValue();
-    const updatedProduct: UpdateProductDto = {
-      title: rawValue.title,
-      price: rawValue.price,
-      description: rawValue.description,
-      categoryId: rawValue.categoryId, 
-      images: rawValue.images
-    };
+    const updatedProduct: UpdateProductDto = this.form.getRawValue();
+
+    console.log('📦 Enviando actualización de producto:', updatedProduct);
 
     this.productService.updateProduct(this.productId, updatedProduct).subscribe({
       next: () => {
         this.openSnackBar('✅ Producto actualizado con éxito', 'Cerrar');
         this.router.navigate(['/products']);
       },
-      error: () => {
+      error: (err) => {
+        console.error('❌ Error al actualizar producto:', err);
         this.openSnackBar('❌ Error al actualizar el producto', 'Cerrar');
       }
     });
@@ -143,5 +143,4 @@ export class EditProductComponent implements OnInit {
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, { duration: 3000 });
   }
-  
 }

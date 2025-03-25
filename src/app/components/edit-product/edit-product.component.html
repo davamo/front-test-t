@@ -1,60 +1,91 @@
-<mat-card class="edit-product-form">
+<mat-card class="edit-product-form" data-cy="edit-product-form">
   <h2>Editar Producto</h2>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" data-cy="edit-product-form">
     <!-- Título -->
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="full-width" data-cy="field-title">
       <mat-label>Título</mat-label>
-      <input matInput formControlName="title" required />
-      <mat-error *ngIf="form.get('title')?.hasError('required')">
+      <input matInput formControlName="title" required data-cy="input-title" />
+      <mat-error *ngIf="form.get('title')?.hasError('required')" data-cy="error-title-required">
         El título es obligatorio.
       </mat-error>
     </mat-form-field>
 
     <!-- Precio -->
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="full-width" data-cy="field-price">
       <mat-label>Precio</mat-label>
-      <input matInput type="number" formControlName="price" required />
-      <mat-error *ngIf="form.get('price')?.hasError('required')">
+      <input matInput type="number" formControlName="price" required data-cy="input-price" />
+      <mat-error *ngIf="form.get('price')?.hasError('required')" data-cy="error-price-required">
         El precio es obligatorio.
       </mat-error>
-      <mat-error *ngIf="form.get('price')?.hasError('min')">
+      <mat-error *ngIf="form.get('price')?.hasError('min')" data-cy="error-price-min">
         El precio debe ser mayor o igual a 0.
       </mat-error>
     </mat-form-field>
 
     <!-- Descripción -->
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="full-width" data-cy="field-description">
       <mat-label>Descripción</mat-label>
-      <textarea matInput rows="3" formControlName="description"></textarea>
+      <textarea matInput rows="3" formControlName="description" data-cy="input-description"></textarea>
     </mat-form-field>
 
-    <!-- Categoría (solo lectura) -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Nombre de Categoría</mat-label>
-      <input matInput [value]="form.get('categoryId')?.value" readonly />
+    <!-- Categoría (solo lectura si no se desea cambiar) -->
+    <mat-form-field appearance="outline" class="full-width" data-cy="field-category">
+      <mat-label>Categoría</mat-label>
+      <mat-select formControlName="categoryId" [disabled]="true" data-cy="select-category">
+        <mat-option *ngFor="let category of categories" [value]="category.id" data-cy="category-option">
+          {{ category.name }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
 
     <!-- Imágenes -->
-    <div formArrayName="images">
+    <div formArrayName="images" data-cy="image-array">
       <div *ngFor="let image of images.controls; let i = index" class="image-field">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>URL Imagen {{ i + 1 }}</mat-label>
-          <input matInput [formControlName]="i" />
-          <button mat-icon-button color="warn" type="button" (click)="removeImage(i)">
+          <input matInput [formControlName]="i" [attr.data-cy]="'input-image-' + i" />
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            (click)="removeImage(i)"
+            [attr.data-cy]="'delete-image-' + i"
+          >
             <mat-icon>delete</mat-icon>
           </button>
         </mat-form-field>
       </div>
-      <button mat-button color="primary" type="button" (click)="addImage()">Añadir Imagen</button>
+      <button
+        mat-button
+        color="primary"
+        type="button"
+        (click)="addImage()"
+        data-cy="add-image"
+      >
+        Añadir Imagen
+      </button>
     </div>
 
     <!-- Botones -->
-    <div class="actions">
-      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid" aria-label="Guardar cambios">
+    <div class="actions" data-cy="form-actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid"
+        aria-label="Guardar cambios"
+        data-cy="save-button"
+      >
         Guardar
       </button>
-      <button mat-button type="button" (click)="cancel()" aria-label="Cancelar edición">
+      <button
+        mat-button
+        type="button"
+        (click)="cancel()"
+        aria-label="Cancelar edición"
+        data-cy="cancel-button"
+      >
         Cancelar
       </button>
     </div>
