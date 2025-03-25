@@ -1,102 +1,127 @@
-# 💼 Front-Test-T – Aplicación Angular 18 para Gestión de Productos
+# 📘 Angular Product Management App
 
-Este proyecto es una aplicación web desarrollada con Angular 18 y TypeScript, orientada a la gestión de productos. Permite visualizar, agregar, editar y listar productos utilizando componentes reutilizables y Angular Material para una interfaz moderna y accesible.
+Sistema de gestión de productos construido con **Angular 18**, **Angular Material**, **Reactive Forms**, y **Cypress** para pruebas E2E.
 
-## 🚀 Tecnologías utilizadas
+---
 
-- Angular 18
-- TypeScript
-- Angular Material
-- SCSS
-- RxJS
-- Servicios con HTTPClient
-- Pruebas con Jasmine, Karma y Cypress para E2E
-
-## 📁 Estructura del Proyecto
+## 📦 Estructura del Proyecto
 
 ```
-src/app/
-├── components/
-│   ├── add-product/          # Componente para agregar productos
-│   ├── edit-product/         # Componente para editar productos
-│   ├── product-list/         # Lista de productos
-│   ├── product-table/        # Tabla con listado de productos
-│   ├── side-menu/            # Menú lateral de navegación
-│   ├── status/               # Componente de estado
-│   ├── layout/               # Diseño base (layouts compartidos)
-│   └── loading/              # Indicador de carga
-├── features/                 # Funcionalidades agrupadas
-├── models/                   # Interfaces y modelos de datos
-│   └── product.model.ts
-├── pages/                    # Vistas principales
-├── pipes/                    # Pipes personalizados
-├── services/                 # Servicios reutilizables
-│   ├── loading.service.ts
-│   └── product.service.ts
-cypress/e2e/
-├── product-list.cy.ts        # Pruebas E2E para listado de productos
-├── add-product.cy.ts          # Pruebas E2E para agregar productos
-└── edit-product.cy.ts         # Pruebas E2E para editar productos
+src/
+├── app/
+│   ├── components/
+│   │   ├── add-product/
+│   │   ├── edit-product/
+│   │   ├── product-list/
+│   │   ├── product-card/
+│   │   └── confirm-dialog/
+│   ├── services/
+│   ├── models/
+│   └── features/
 ```
 
-## 🔧 Instalación
+---
 
-1. Clonar el repositorio
+## 🚀 Funcionalidades
+
+- Agregar productos con validación.
+- Editar productos existentes.
+- Eliminar productos con confirmación.
+- Filtro de búsqueda y paginación.
+- Categorías cargadas desde API simulada.
+- UI moderna con Angular Material.
+- Pruebas unitarias y E2E completas.
+
+---
+
+## 🧪 Pruebas Automatizadas
+
+| Tipo      | Herramienta | Ubicación                      |
+| --------- | ----------- | ------------------------------ |
+| Unitarias | Jasmine     | `*.spec.ts` en cada componente |
+| E2E       | Cypress     | `cypress/e2e/products/*.cy.ts` |
+
+### Comandos Cypress
 
 ```bash
-git clone https://github.com/usuario/front-test-t.git
+npx cypress open      # UI interactiva
+npx cypress run       # Headless (CI)
+```
+
+---
+
+## ⚒️ Instalación y Setup
+
+### Requisitos:
+
+- Node.js 18+
+- Angular CLI 17+
+- Cypress (instalado con `npm i`)
+
+### Instrucciones:
+
+```bash
+git clone https://github.com/tu-usuario/front-test-t.git
 cd front-test-t
-```
-
-2. Instalar dependencias
-
-```bash
 npm install
-```
-
-3. Ejecutar la aplicación
-
-```bash
 ng serve
 ```
 
-Abrir el navegador en http://localhost:4200/
+Navega a [http://localhost:4200](http://localhost:4200)
 
-## 🧪 Ejecutar pruebas unitarias
+---
 
-```bash
-ng test
+## 📩 Comandos Útiles
+
+| Acción                     | Comando            |
+| -------------------------- | ------------------ |
+| Ejecutar app               | `ng serve`         |
+| Ejecutar pruebas unitarias | `ng test`          |
+| Ejecutar pruebas E2E       | `npx cypress open` |
+| Lint                       | `ng lint`          |
+
+---
+
+## 🔩 Accesibilidad para Cypress
+
+Todos los campos, botones e íconos relevantes usan `data-cy`, por ejemplo:
+
+```html
+<input data-cy="input-title" />
+<button data-cy="save-button">Guardar</button>
 ```
 
-## 🧱 Ejecutar pruebas E2E con Cypress
+---
 
-```bash
-npm run cypress:open
-# o en modo headless:
-npm run cypress:run
-```
+## 📁 Modo Mock / LocalStorage
 
-## 🧱 Build de producción
+- Si la API falla, el sistema carga productos desde `localStorage`.
+- Puedes limpiar los datos con `localStorage.clear()` o desde el `ProductService`.
 
-```bash
-ng build --configuration production
-```
+---
 
-Los archivos se generarán en la carpeta dist/.
+## 📈 Próximas Mejores Propuestas
 
-## 🧠 Funcionalidades principales
+- Autenticación con `AuthGuard`.
+- Reemplazar API mock por Firebase o NestJS real.
+- Añadir internationalización (`i18n`).
+- Mejorar la cobertura de test (`coverage report`).
+- Soporte para despliegue CI/CD.
 
-- 📝 Crear y editar productos
-- 📋 Listado dinámico con tabla y filtrado
-- 🧱 Navegación lateral con Angular Material
-- 🔄 Indicadores de carga reutilizables
-- 🧪 Pruebas unitarias y pruebas E2E con Cypress
+---
 
-## 📃 Licencia
+## 👨‍💼 Desarrollador
 
-Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+> Proyecto desarrollado por [Tu Nombre o GitHub](https://github.com/tu-usuario)
 
-## 👨‍💼 Autor
+---
 
-Desarrollado por David Varela M  
-️✉️ Contacto: davamo@davamo.cl
+## 📝 Licencia
+
+MIT License
+
+for davamo
+
+email: [davamo@davamo.cl](mailto\:davamo@davamo.cl)
+
+[https://davamo.cl/](https://davamo.cl/)
